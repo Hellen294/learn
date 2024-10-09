@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Schools and Students - MathCloud Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Update Schools and Students</h1>
+        <p>Add, edit, or remove schools and students easily.</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>Add a School</h2>
+            <input type="text" id="newSchool" placeholder="School Name">
+            <input type="url" id="newSchoolUrl" placeholder="School Website URL">
+            <label for="mathUrl">Mathematics:</label>
+            <input type="url" id="mathUrl" placeholder="Math URL (m.html)">
+            <label for="phyUrl">Physics:</label>
+            <input type="url" id="phyUrl" placeholder="Physics URL (p.html)">
+            <label for="ictUrl">ICT:</label>
+            <input type="url" id="ictUrl" placeholder="ICT URL (i.html)">
+            <button id="addSchoolBtn">Add School</button>
+        </section>
+
+        <section>
+            <h2>Add a Student</h2>
+            <input type="text" id="newStudent" placeholder="Student Name">
+            <input type="url" id="newStudentUrl" placeholder="Student Website URL">
+            <label for="studentMathUrl">Mathematics:</label>
+            <input type="url" id="studentMathUrl" placeholder="Math URL (m.html)">
+            <label for="studentPhyUrl">Physics:</label>
+            <input type="url" id="studentPhyUrl" placeholder="Physics URL (p.html)">
+            <label for="studentIctUrl">ICT:</label>
+            <input type="url" id="studentIctUrl" placeholder="ICT URL (i.html)">
+            <button id="addStudentBtn">Add Student</button>
+        </section>
+
+        <section>
+            <h2>Existing Schools</h2>
+            <table id="schoolTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Website</th>
+                        <th>Math</th>
+                        <th>Physics</th>
+                        <th>ICT</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="schoolList"></tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Existing Students</h2>
+            <table id="studentTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Website</th>
+                        <th>Math</th>
+                        <th>Physics</th>
+                        <th>ICT</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="studentList"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        &copy; 2024 MathCloud Tutorial. All rights reserved.
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAt1_h1qNpsvvTtJNojAq70eCqrfdJ0Sn0",
+            authDomain: "year-5.firebaseapp.com",
+            databaseURL: "https://year-5-default-rtdb.firebaseio.com",
+            projectId: "year-5",
+            storageBucket: "year-5.appspot.com",
+            messagingSenderId: "289843229551",
+            appId: "1:289843229551:web:7fe690010e854fd6a7ae9a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        function addSchool() {
+            const schoolName = document.getElementById("newSchool").value;
+            const schoolUrl = document.getElementById("newSchoolUrl").value;
+            const mathUrl = document.getElementById("mathUrl").value;
+            const phyUrl = document.getElementById("phyUrl").value;
+            const ictUrl = document.getElementById("ictUrl").value;
+            if (schoolName) {
+                const newSchoolRef = push(ref(db, 'schools'));
+                set(newSchoolRef, { 
+                    name: schoolName, 
+                    website: schoolUrl,
+                    mathUrl: mathUrl,
+                    phyUrl: phyUrl,
+                    ictUrl: ictUrl
+                });
+                document.getElementById("newSchool").value = '';
+                document.getElementById("newSchoolUrl").value = '';
+                document.getElementById("mathUrl").value = '';
+                document.getElementById("phyUrl").value = '';
+                document.getElementById("ictUrl").value = '';
+                alert("School added!");
+            } else {
+                alert("Please enter a school name.");
+            }
+        }
+
+        function addStudent() {
+            const studentName = document.getElementById("newStudent").value;
+            const studentUrl = document.getElementById("newStudentUrl").value;
+            const studentMathUrl = document.getElementById("studentMathUrl").value;
+            const studentPhyUrl = document.getElementById("studentPhyUrl").value;
+            const studentIctUrl = document.getElementById("studentIctUrl").value;
+            if (studentName) {
+                const newStudentRef = push(ref(db, 'students'));
+                set(newStudentRef, { 
+                    name: studentName, 
+                    website: studentUrl,
+                    mathUrl: studentMathUrl,
+                    phyUrl: studentPhyUrl,
+                    ictUrl: studentIctUrl
+                });
+                document.getElementById("newStudent").value = '';
+                document.getElementById("newStudentUrl").value = '';
+                document.getElementById("studentMathUrl").value = '';
+                document.getElementById("studentPhyUrl").value = '';
+                document.getElementById("studentIctUrl").value = '';
+                alert("Student added!");
+            } else {
+                alert("Please enter a student name.");
+            }
+        }
+
+        function displayCurrentData() {
+            const schoolList = document.getElementById("schoolList");
+            const studentList = document.getElementById("studentList");
+
+            onValue(ref(db, 'schools'), (snapshot) => {
+                schoolList.innerHTML = ''; // Clear existing list
+                snapshot.forEach(childSnapshot => {
+                    const schoolData = childSnapshot.val();
+                    const row = document.createElement("tr");
+
+                    const nameCell = document.createElement("td");
+                    nameCell.textContent = schoolData.name;
+
+                    const websiteCell = document.createElement("td");
+                    const link = document.createElement("a");
+                    link.href = schoolData.website;
+                    link.textContent = "Website";
+                    link.target = "_blank"; // Open in new tab
+                    websiteCell.appendChild(link);
+
+                    const mathCell = document.createElement("td");
+                    const mathLink = document.createElement("a");
+                    mathLink.href = schoolData.mathUrl;
+                    mathLink.textContent = "Math";
+                    mathLink.target = "_blank";
+                    mathCell.appendChild(mathLink);
+
+                    const phyCell = document.createElement("td");
+                    const phyLink = document.createElement("a");
+                    phyLink.href = schoolData.phyUrl;
+                    phyLink.textContent = "Physics";
+                    phyLink.target = "_blank";
+                    phyCell.appendChild(phyLink);
+
+                    const ictCell = document.createElement("td");
+                    const ictLink = document.createElement("a");
+                    ictLink.href = schoolData.ictUrl;
+                    ictLink.textContent = "ICT";
+                    ictLink.target = "_blank";
+                    ictCell.appendChild(ictLink);
+
+                    const actionsCell = document.createElement("td");
+                    const editButton = document.createElement("button");
+                    editButton.textContent = "Edit";
+                    editButton.onclick = () => editSchool(childSnapshot.key);
+
+                    const deleteButton = document.createElement("button");
+                    deleteButton.textContent = "Delete";
+                    deleteButton.onclick = () => deleteSchool(childSnapshot.key);
+
+                    actionsCell.appendChild(editButton);
+                    actionsCell.appendChild(deleteButton);
+
+                    row.appendChild(nameCell);
+                    row.appendChild(websiteCell);
+                    row.appendChild(mathCell);
+                    row.appendChild(phyCell);
+                    row.appendChild(ictCell);
+                    row.appendChild(actionsCell);
+                    schoolList.appendChild(row);
+                });
+            });
+
+            onValue(ref(db, 'students'), (snapshot) => {
+                studentList.innerHTML = ''; // Clear existing list
+                snapshot.forEach(childSnapshot => {
+                    const studentData = childSnapshot.val();
+                    const row = document.createElement("tr");
+
+                    const nameCell = document.createElement("td");
+                    nameCell.textContent = studentData.name;
+
+                    const websiteCell = document.createElement("td");
+                    const link = document.createElement("a");
+                    link.href = studentData.website;
+                    link.textContent = "Website";
+                    link.target = "_blank"; // Open in new tab
+                    websiteCell.appendChild(link);
+
+                    const mathCell = document.createElement("td");
+                    const mathLink = document.createElement("a");
+                    mathLink.href = studentData.mathUrl;
+                    mathLink.textContent = "Math";
+                    mathLink.target = "_blank";
+                    mathCell.appendChild(mathLink);
+
+                    const phyCell = document.createElement("td");
+                    const phyLink = document.createElement("a");
+                    phyLink.href = studentData.phyUrl;
+                    phyLink.textContent = "Physics";
+                    phyLink.target = "_blank";
+                    phyCell.appendChild(phyLink);
+
+                    const ictCell = document.createElement("td");
+                    const ictLink = document.createElement("a");
+                    ictLink.href = studentData.ictUrl;
+                    ictLink.textContent = "ICT";
+                    ictLink.target = "_blank";
+                    ictCell.appendChild(ictLink);
+
+                    const actionsCell = document.createElement("td");
+                    const deleteButton = document.createElement("button");
+                    deleteButton.textContent = "Delete";
+                    deleteButton.onclick = () => deleteStudent(childSnapshot.key);
+
+                    actionsCell.appendChild(deleteButton);
+
+                    row.appendChild(nameCell);
+                    row.appendChild(websiteCell);
+                    row.appendChild(mathCell);
+                    row.appendChild(phyCell);
+                    row.appendChild(ictCell);
+                    row.appendChild(actionsCell);
+                    studentList.appendChild(row);
+                });
+            });
+        }
+
+        function editSchool(schoolId) {
+            const newSchoolName = prompt("Edit school name:", "");
+            const newSchoolUrl = prompt("Edit school website URL:", "http://example.com");
+            const newMathUrl = prompt("Edit Mathematics URL:", "http://example.com/m.html");
+            const newPhyUrl = prompt("Edit Physics URL:", "http://example.com/p.html");
+            const newIctUrl = prompt("Edit ICT URL:", "http://example.com/i.html");
+            if (newSchoolName) {
+                set(ref(db, 'schools/' + schoolId), { 
+                    name: newSchoolName, 
+                    website: newSchoolUrl,
+                    mathUrl: newMathUrl,
+                    phyUrl: newPhyUrl,
+                    ictUrl: newIctUrl
+                });
+            }
+        }
+
+        function deleteSchool(schoolId) {
+            if (confirm("Are you sure you want to delete this school?")) {
+                remove(ref(db, 'schools/' + schoolId));
+            }
+        }
+
+        function deleteStudent(studentId) {
+            if (confirm("Are you sure you want to delete this student?")) {
+                remove(ref(db, 'students/' + studentId));
+            }
+        }
+
+        // Event listeners for buttons
+        document.getElementById("addSchoolBtn").addEventListener("click", addSchool);
+        document.getElementById("addStudentBtn").addEventListener("click", addStudent);
+
+        window.onload = displayCurrentData;
+    </script>
+
+    <style>
+        /* Basic styles for the tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            margin-left: 5px;
+        }
+        a {
+            color: blue;
+            text-decoration: underline;
+        }
+    </style>
+</body>
+</html>
