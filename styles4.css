@@ -6,6 +6,7 @@ body {
 }
 
 .button-container {
+    position: center;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
