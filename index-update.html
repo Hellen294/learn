@@ -18,6 +18,7 @@
             <h2>Add a School</h2>
             <input type="text" id="newSchool" placeholder="School Name">
             <input type="url" id="newSchoolUrl" placeholder="School Website URL">
+            <input type="url" id="newSchoolScheduleUrl" placeholder="School Schedule URL">
             <label for="mathUrl">Mathematics:</label>
             <input type="url" id="mathUrl" placeholder="Math URL (m.html)">
             <label for="phyUrl">Physics:</label>
@@ -31,6 +32,7 @@
             <h2>Add a Student</h2>
             <input type="text" id="newStudent" placeholder="Student Name">
             <input type="url" id="newStudentUrl" placeholder="Student Website URL">
+            <input type="url" id="newStudentScheduleUrl" placeholder="Student Schedule URL">
             <label for="studentMathUrl">Mathematics:</label>
             <input type="url" id="studentMathUrl" placeholder="Math URL (m.html)">
             <label for="studentPhyUrl">Physics:</label>
@@ -47,6 +49,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Website</th>
+                        <th>Schedule</th>
                         <th>Math</th>
                         <th>Physics</th>
                         <th>ICT</th>
@@ -64,6 +67,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Website</th>
+                        <th>Schedule</th>
                         <th>Math</th>
                         <th>Physics</th>
                         <th>ICT</th>
@@ -99,6 +103,7 @@
         function addSchool() {
             const schoolName = document.getElementById("newSchool").value;
             const schoolUrl = document.getElementById("newSchoolUrl").value;
+            const schoolScheduleUrl = document.getElementById("newSchoolScheduleUrl").value;
             const mathUrl = document.getElementById("mathUrl").value;
             const phyUrl = document.getElementById("phyUrl").value;
             const ictUrl = document.getElementById("ictUrl").value;
@@ -107,12 +112,14 @@
                 set(newSchoolRef, { 
                     name: schoolName, 
                     website: schoolUrl,
+                    scheduleUrl: schoolScheduleUrl,
                     mathUrl: mathUrl,
                     phyUrl: phyUrl,
                     ictUrl: ictUrl
                 });
                 document.getElementById("newSchool").value = '';
                 document.getElementById("newSchoolUrl").value = '';
+                document.getElementById("newSchoolScheduleUrl").value = '';
                 document.getElementById("mathUrl").value = '';
                 document.getElementById("phyUrl").value = '';
                 document.getElementById("ictUrl").value = '';
@@ -125,6 +132,7 @@
         function addStudent() {
             const studentName = document.getElementById("newStudent").value;
             const studentUrl = document.getElementById("newStudentUrl").value;
+            const studentScheduleUrl = document.getElementById("newStudentScheduleUrl").value;
             const studentMathUrl = document.getElementById("studentMathUrl").value;
             const studentPhyUrl = document.getElementById("studentPhyUrl").value;
             const studentIctUrl = document.getElementById("studentIctUrl").value;
@@ -133,12 +141,14 @@
                 set(newStudentRef, { 
                     name: studentName, 
                     website: studentUrl,
+                    scheduleUrl: studentScheduleUrl,
                     mathUrl: studentMathUrl,
                     phyUrl: studentPhyUrl,
                     ictUrl: studentIctUrl
                 });
                 document.getElementById("newStudent").value = '';
                 document.getElementById("newStudentUrl").value = '';
+                document.getElementById("newStudentScheduleUrl").value = '';
                 document.getElementById("studentMathUrl").value = '';
                 document.getElementById("studentPhyUrl").value = '';
                 document.getElementById("studentIctUrl").value = '';
@@ -167,6 +177,13 @@
                     link.textContent = "Website";
                     link.target = "_blank"; // Open in new tab
                     websiteCell.appendChild(link);
+
+                    const scheduleCell = document.createElement("td");
+                    const scheduleLink = document.createElement("a");
+                    scheduleLink.href = schoolData.scheduleUrl;
+                    scheduleLink.textContent = "Schedule";
+                    scheduleLink.target = "_blank"; // Open in new tab
+                    scheduleCell.appendChild(scheduleLink);
 
                     const mathCell = document.createElement("td");
                     const mathLink = document.createElement("a");
@@ -203,6 +220,7 @@
 
                     row.appendChild(nameCell);
                     row.appendChild(websiteCell);
+                    row.appendChild(scheduleCell);
                     row.appendChild(mathCell);
                     row.appendChild(phyCell);
                     row.appendChild(ictCell);
@@ -226,6 +244,13 @@
                     link.textContent = "Website";
                     link.target = "_blank"; // Open in new tab
                     websiteCell.appendChild(link);
+
+                    const scheduleCell = document.createElement("td");
+                    const scheduleLink = document.createElement("a");
+                    scheduleLink.href = studentData.scheduleUrl;
+                    scheduleLink.textContent = "Schedule";
+                    scheduleLink.target = "_blank"; // Open in new tab
+                    scheduleCell.appendChild(scheduleLink);
 
                     const mathCell = document.createElement("td");
                     const mathLink = document.createElement("a");
@@ -257,6 +282,7 @@
 
                     row.appendChild(nameCell);
                     row.appendChild(websiteCell);
+                    row.appendChild(scheduleCell);
                     row.appendChild(mathCell);
                     row.appendChild(phyCell);
                     row.appendChild(ictCell);
@@ -269,6 +295,7 @@
         function editSchool(schoolId) {
             const newSchoolName = prompt("Edit school name:", "");
             const newSchoolUrl = prompt("Edit school website URL:", "http://example.com");
+            const newSchoolScheduleUrl = prompt("Edit school schedule URL:", "http://example.com/schedule");
             const newMathUrl = prompt("Edit Mathematics URL:", "http://example.com/m.html");
             const newPhyUrl = prompt("Edit Physics URL:", "http://example.com/p.html");
             const newIctUrl = prompt("Edit ICT URL:", "http://example.com/i.html");
@@ -276,6 +303,7 @@
                 set(ref(db, 'schools/' + schoolId), { 
                     name: newSchoolName, 
                     website: newSchoolUrl,
+                    scheduleUrl: newSchoolScheduleUrl,
                     mathUrl: newMathUrl,
                     phyUrl: newPhyUrl,
                     ictUrl: newIctUrl
