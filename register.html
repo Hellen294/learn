@@ -97,8 +97,8 @@
             background-color: #FF5A47;
         }
         .bundle {
-            background-color: white;
-            color: black;
+            background-color: #FF6F61;
+            color: white;
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 15px;
@@ -124,7 +124,7 @@
 
 <div class="container">
     <h1>Registration Form</h1>
-    <form id="registrationForm" onsubmit="sendWhatsApp(event)">
+    <form id="registrationForm" onsubmit="sendMessage(event)">
         <label for="name">Full Name:</label>
         <input type="text" id="name" name="name" required>
 
@@ -180,6 +180,12 @@
             <option value="Thrice a Week">Thrice a Week</option>
         </select>
 
+        <label for="contactMethod">Send Registration To:</label>
+        <select id="contactMethod" name="contactMethod" required>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="email">Email</option>
+        </select>
+
         <button type="submit">Submit Registration</button>
     </form>
     <div class="bundle">
@@ -194,7 +200,7 @@
 </div>
 
 <script>
-    function sendWhatsApp(event) {
+    function sendMessage(event) {
         event.preventDefault();
         const name = document.getElementById('name').value;
         const currentClass = document.getElementById('currentClass').value;
@@ -205,11 +211,18 @@
         const program = document.getElementById('program').value;
         const subject = document.getElementById('subject').value;
         const bundle = document.getElementById('bundle').value;
+        const contactMethod = document.getElementById('contactMethod').value;
 
         const message = `*Registration Details:*\nName: ${name}\nCurrent Class: ${currentClass}\nParent's Email: ${parentsEmail}\nPreferred Curriculum: ${curriculum}\nCountry: ${country}\nPreferred Currency: ${currency}\nProgram: ${program}\nSubject: ${subject}\nBundle Frequency: ${bundle}`;
-        const whatsappURL = `https://api.whatsapp.com/send?phone=2348102341648&text=${encodeURIComponent(message)}`;
-
-        window.open(whatsappURL, '_blank');
+        
+        if (contactMethod === 'whatsapp') {
+            const whatsappURL = `https://api.whatsapp.com/send?phone=2348102341648&text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, '_blank');
+        } else {
+            const emailSubject = "MathCloud Registration";
+            const emailBody = encodeURIComponent(message);
+            window.location.href = `mailto:marshall12340@gmail.com?subject=${emailSubject}&body=${emailBody}`;
+        }
     }
 </script>
 
