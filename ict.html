@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Class URLs</title>
     <script type="module">
-        // Your Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAt1_h1qNpsvvTtJNojAq70eCqrfdJ0Sn0",
             authDomain: "year-5.firebaseapp.com",
@@ -16,17 +15,15 @@
             appId: "1:289843229551:web:7fe690010e854fd6a7ae9a"
         };
 
-        // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
         import { getDatabase, ref, get, child } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
         async function displayCards() {
             const cardContainer = document.getElementById("cardContainer");
-            cardContainer.innerHTML = ""; // Clear the existing cards
+            cardContainer.innerHTML = ""; // Clear existing cards
 
             const snapshot = await get(child(ref(db), 'urls'));
             if (snapshot.exists()) {
@@ -46,8 +43,26 @@
             }
         }
 
-        // Load URLs on page load
-        window.onload = displayCards;
+        // Login function
+        window.login = function() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const errorMessage = document.getElementById("error-message");
+
+            if (username === "User1" && password === "password1") {
+                errorMessage.textContent = "";
+                document.getElementById("login-container").style.display = "none";
+                document.getElementById("content").style.display = "block";
+                displayCards();
+            } else {
+                errorMessage.textContent = "Invalid username or password!";
+            }
+        };
+
+        // Load content on page load
+        window.onload = () => {
+            document.getElementById("content").style.display = "none"; // Hide content initially
+        };
     </script>
     <style>
         body {
@@ -105,10 +120,57 @@
                 flex: 1 1 calc(100% - 20px); /* Full width on small screens */
             }
         }
+        .button {
+            padding: 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 12px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+        }
+
+        .login-container {
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .login-container input {
+            padding: 10px;
+            margin: 5px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <h1>ICT Class</h1>
-    <div id="cardContainer"></div>
+
+    <div id="login-container" class="login-container">
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button class="button" onclick="login()">Login</button>
+        <div id="error-message" class="error"></div>
+    </div>
+
+    <div id="content">
+        <div id="cardContainer"></div>
+    </div>
 </body>
 </html>
