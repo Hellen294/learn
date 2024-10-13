@@ -3,15 +3,24 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Full height for flex layout */
+}
+
+.content {
+    flex: 1; /* Allow content to grow */
+    padding: 20px; /* Padding for content */
 }
 
 .button-container {
-    position: center;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
+    position: fixed; /* Fix position at the bottom */
+    bottom: 20px; /* Distance from the bottom */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust to center */
+    display: flex; /* Use flexbox */
     gap: 20px; /* Space between buttons */
+    z-index: 1000; /* Keep it above other elements */
 }
 
 .btn {
